@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import InputField from "../_forms/input-field";
 import FooterLink from "../_forms/footer-link";
+import { signInWithEmail } from "@/lib/actions/auth-actions";
+import { toast } from "sonner";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -21,12 +23,21 @@ const SignInPage = () => {
   });
 
   const onSubmit = async (data: SignInFormData) => {
-    try {
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      try {
+        const result = await signInWithEmail(data);
+        if (result.success) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Sign in failed", {
+          description:
+            error instanceof Error
+              ? error.message
+              : "Failed to sign",
+        });
+      }
+    };
 
   return (
     <>
