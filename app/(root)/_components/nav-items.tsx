@@ -14,7 +14,7 @@ const NavItems = () => {
   return (
     <ul className="flex flex-col sm:flex-row p-2 gap-3 sm:gap-10 font-medium">
       {NAV_ITEMS.map(({ href, label }) => {
-        if (label === "Search")
+        if (href === "/search")
           return (
             <li key="search-trigger">
               <SearchCommand
@@ -26,7 +26,7 @@ const NavItems = () => {
           );
 
         return (
-          <li className="" key={href}>
+          <li key={href}>
             <Link
               className={`hover:text-yellow-500 transition-colors ${
                 isActive(href) ? "text-gray-100" : ""
