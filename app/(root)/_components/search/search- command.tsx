@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -12,17 +13,30 @@ import { Loader2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { searchStocks } from "@/lib/actions/finnhub-actions";
 import { useDebounce } from "@/hooks/useDebounce";
+import { IStock } from "@/app/types";
+import WatchlistButton from "../../stocks/_components/watch-list-button";
+import { getUser } from "@/lib/better-auth";
+import { getUserWatchlist } from "@/lib/actions/watch-list-action";
+
+interface SearchCommandProps {
+  renderAs?: "button" | "text";
+  label?: string;
+  initialStocks: IStock[];
+  userId: string;
+  watchlist: IStock[];
+}
 
 export default function SearchCommand({
   renderAs = "button",
   label = "Add stock",
   initialStocks,
+  userId,
+  watchlist,
 }: SearchCommandProps) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [stocks, setStocks] =
-    useState<StockWithWatchlistStatus[]>(initialStocks);
+  const [stocks, setStocks] = useState<IStock[]>(initialStocks);
 
   const isSearchMode = !!searchTerm.trim();
   const displayStocks = isSearchMode ? stocks : stocks?.slice(0, 10);
@@ -118,7 +132,11 @@ export default function SearchCommand({
                         {stock.symbol} | {stock.exchange} | {stock.type}
                       </div>
                     </div>
-                    {/*<Star />*/}
+                    <WatchlistButton
+                      symbol={stock.symbol}
+                      userId={userId}
+                      isWatched={watchlist.some((w) => w.symbol === stock.symbol)}
+                    />
                   </Link>
                 </li>
               ))}
